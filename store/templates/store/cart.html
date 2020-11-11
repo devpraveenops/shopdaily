@@ -1,0 +1,46 @@
+{% extends 'store/base.html' %}
+{% load static cart util %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="box-element">
+            <a class="btn btn-outline-dark" href="{% url 'store' %}">&#x2190; Continue Shopping</a>
+            <a style="float:right; margin:5px;" class="btn btn-success {{ products|length|yesno:'ok,hidden' }}" href="{% url 'checkout' %}">Checkout</a>
+            <br>
+        </div>
+        
+        <br>
+        <div class="box-element">
+            <div class="cart-row">
+                <div style="flex:2">#</div>
+                <div style="flex:2"><strong>Item</strong></div>
+                <div style="flex:1"><strong>Price</strong></div>
+                <div style="flex:1"><strong>Quantity</strong></div>
+                <div style="flex:1"><strong>Total</strong></div>
+                <div style="flex:1"><strong>Action</strong></div>
+            </div>
+            
+
+            {% for product in products %}
+            <div class="cart-row">
+                <div style="flex:2"><img class="row-image" src="{{product.imageURL}}"></div>
+                <div style="flex:2"><p>{{product.name}}</p></div>
+                <div style="flex:1"><p>{{product.price|floatformat:2}}</p></div>
+                <div style="flex:1">
+                    <p class="quantity">{{product|cart_quantity:request.session.cart}}</p>
+                </div>
+                <div style="flex:1"><p>{{product|price_total:request.session.cart}}</p></div>
+                <div style="flex:1">
+                    <div class="quantity">
+                        <a href="{% url 'updatecart' product.id %}?action=add" class="btn btn-primary">+</a>
+                        <a href="{% url 'updatecart' product.id %}?action=remove" class="btn btn-warning">-</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div style="flex:1"><p>Your cart is empty</p></div>
+                    
+            {% endfor %}
+    </div>
+</div>
+{% endblock content %}

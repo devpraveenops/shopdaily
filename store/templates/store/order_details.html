@@ -1,0 +1,67 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+  <main>
+    <div class="container">
+
+    <div class="table-responsive text-nowrap">
+    <h2>Order Details</h2>
+    
+          <address>
+            Name : {{order.first_name}}<br>
+            Address : {{order.phone}}<br>
+            {{ order.s_address}} <br>   
+            {{order.city}}-{{order.zipcode}}
+          </address>
+      
+   Status : <span>{{order.status}}</span> 
+   
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Quantity</th>
+            <th scope="col" class="text-right">Price</th>
+            <th scope="col" class="text-right">Amount</th>
+            <!-- <th scope="col">Status</th> -->
+        </tr>
+        </thead>
+        <tbody>
+            
+        {% for data in order.orderproduct_set.all %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ data.product.name }}</td>
+            <td >{{ data.quantity }}</td>
+            <td class="text-right">{{ data.price|floatformat:2 }}</td>
+            <td class="text-right">{{ data.amount|floatformat:2 }}</td>
+            <!-- <td>{{ data.status }}</td>
+            <td><a class="nav-link" href="{% url 'order_details' data.id  'cancel' %}" id="{{data.id}}">Cancel<span class="sr-only">(current)</span></a></td> -->
+        </tr>
+        
+        
+        {% endfor %}
+        <tr>
+          <th colspan="3"> Total</th>
+          <th>{{order.total|floatformat:2}}</th>
+        </tr>
+        </tbody>
+        
+    </table>
+    
+    <a class="btn btn-outline-dark" href="{% url 'order' %}">Back<span class="sr-only">(current)</span></a>
+    {% if order.status|stringformat:"s" == "New" %}
+    <a class="btn btn-outline-dark" href="{% url 'order_details' order.id  'cancel' %}" id="{{order.id}}">Cancel Order<span class="sr-only">(current)</span></a>
+    {% endif %}
+    
+    
+    
+    </div>
+
+    </div>
+  </main>
+
+{% endblock content %}
+
+

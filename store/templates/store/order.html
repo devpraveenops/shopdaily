@@ -1,0 +1,135 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+<main>
+    <div class="container">
+
+        <div class="table-responsive text-nowrap">
+            <h2>Your Orders</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Code</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Total Price</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for order_item in order %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ order_item.code }}</td>
+                        <td>{{ order_item.first_name }}</td>
+                        <td>{{ order_item.phone }}</td>
+                        <td>{{ order_item.s_address }}, {{ order_item.city }}</td>
+                        <td>
+                            {% if order_item.item.discount_price %}
+                            ${{ order_item.get_total_discount_item_price }}
+                            <span class="badge badge-primary">Saving ${{ order_item.get_amount_saved }}</span>
+                            {% else %}
+                            ${{ order_item.total|floatformat:2 }}
+                            {% endif %}
+
+                        </td>
+                        <td>{{order_item.status}}</td>
+                        <td>
+                            <a href="{% url 'order_details' order_item.id  'view' %}" id="{{order_item.id}}" value="{{order_item.id}}" data-action="view" class="order-links" >
+                               View 
+                               <input type="hidden" value="store" name="order-ids">
+                            </a>
+                            <!-- <a href="{% url 'order_details' order_item.id  'cancel' %}" id="{{order_item.id}}" data-action="remove" class="order-links">
+                                Cancel
+                            </a> -->
+                            
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan='5'>Your cart is empty</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <a class='btn btn-primary float-right' href='/'>Continue shopping</a>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+
+                    {% if object.get_total %}
+                    <tr>
+                        <td colspan="4"><b>Order Total</b></td>
+                        <td><b>${{ object.get_total }}</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <a class='btn btn-warning float-right ml-2' href='/checkout/'>Proceed to checkout</a>
+                            <a class='btn btn-primary float-right' href='/'>Continue shopping</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+</main>
+
+
+{% endblock content %}
+
+{% block javascript %}
+<script language="javascript">
+
+$(document).ready(function(e){
+
+    $('.order-link').click(function (e) {
+        // e.preventDefault()
+        console.log('4534803450praveen84058405480959')
+        // alert($(this).attr('data-action'))
+        console.log('-------------------------', $(this).attr('id'))
+
+        var order = "{% url 'order' %}"
+        console.log(order+$(this).attr('data-action'));
+        var url = order+$(this).attr('data-action')
+
+        if($(this).attr('id')){
+            console.log('inside if conditon')
+            
+            fetch(url, {
+                method :'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                    'order-id':$(this).attr('id'), 
+                    'action':$(this).attr('data-action')
+                },
+                body:JSON.stringify({'order-id':$(this).attr('id'), 'action':$(this).attr('data-action')})
+            })
+            .then((response) =>{
+                console.log(response.url)
+                alert(url)
+                window.location.href = response.url
+            })
+            .catch(function(error) {
+                console.log(error)
+                alert(url)
+            });
+
+
+
+
+            
+                   }
+    })
+})
+  
+
+</script>
+{% endblock javascript %}

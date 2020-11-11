@@ -1,0 +1,21 @@
+{% extends 'store/base.html' %}
+{% load static %} {% load cart util %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <form action="{% url 'profile' %}" method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-field">
+                {{ field.label_tag  }}
+                {{ field }}
+            </div>
+            {% endfor %}
+            <input id="form-button" class="btn btn-success btn-block" type="submit" value="Update">
+        </form>
+    </div>
+    <div class="col-lg-6">
+        Image
+    </div>
+</div>
+{% endblock content %}

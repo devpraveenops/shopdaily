@@ -1,0 +1,18 @@
+ServerName 127.0.0.1:80
+
+LoadFile "c:/program files (x86)/python38-32/python38.dll"
+LoadModule wsgi_module "c:/program files (x86)/python38-32/lib/site-packages/mod_wsgi/server/mod_wsgi.cp38-win32.pyd"
+WSGIPythonHome "c:/program files (x86)/python38-32"
+WSGIScriptAlias / "D:/ecommerce/ecommerce/wsgi.py"
+WSGIPythonPath "D:/ecommerce/ecommerce"
+<Directory "D:/ecommerce/ecommerce/">
+	<Files wsgi.py>
+		Require all granted
+	</Files>
+</Directory>
+
+Alias /static "D:/ecommerce/static/"
+
+<Directory "D:/ecommerce/static/">
+Require all granted
+</Directory>

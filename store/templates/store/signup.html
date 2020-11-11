@@ -1,0 +1,44 @@
+{% extends 'store/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="p-4 m-4">
+        <div class="col-lg-5 rounded mx-auto border pt-4">
+            <div class="text-center col">
+                <!-- <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Shopping_cart_with_food_clip_art_2.svg/307px-Shopping_cart_with_food_clip_art_2.svg.png" alt=""
+                class="" style="height: 150px;"> -->
+            
+                <div class="display-8">
+                    <h3 class="alert alert-light">Create An Account</h3>
+                </div>
+                <hr>
+            </div>
+            
+            <form action="{% url 'signup' %}" method="POST" class="uniForm">
+
+                {% csrf_token %}
+                
+                {% if error%}
+                    <div class="alert alert-danger" role="alert">
+                        {{error}}
+                    </div>
+                {% endif %}
+                {{ form|crispy }} 
+                
+                <!-- {% for field in form %}
+                    <div class="form-group">
+                    <label>{{ field.label_tag }}</label>
+                    <p>{{ field }} {{field.errors|striptags}}</p>
+                    
+                    </div>
+                {% endfor %} -->
+                <button type="submit" class="btn btn-primary">Signup</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

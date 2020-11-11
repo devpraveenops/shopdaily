@@ -1,0 +1,4 @@
+pip install mod_wsgi
+pip install django
+pip install twilio
+pip install gunicorn

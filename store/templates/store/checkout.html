@@ -1,0 +1,137 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% load cart %}
+{% load util %}
+{% load countries %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="box-element {{ request.user.is_authenticated|yesno:'hidden,login' }}" id="form-wrapper">
+            
+            <div class="form-container">
+                <div class="form-btn">
+                    
+                </div>
+                <span onClick="login()">Login</span>
+                
+                <hr id="indicator" />
+                <form id="login-form" action="{% url 'login' %}" method="POST">
+                    {% csrf_token %}
+                    <!-- email -->
+                    <div class="form-group">
+                        <label for="">Username</label>
+                        <input required type="username" name="username" id="" value="{{ values.username }}" class=" form-control" placeholder="Username">
+                    </div>
+                    <!-- password -->
+                    <div class="form-group">
+                        <label for="">Password</label>
+                        <input type="password" name="password" id="" class="form-control" placeholder="********">
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="hidden" value="checkout" name="next">
+                        <input class="btn btn-sm btn-info col-lg-4" type="submit" value="Login">
+                        <a class="nav-link" href="{% url 'signup' %}">New to Ecom? Signup<span class="sr-only">(current)</span></a>
+                    </div>
+                    
+                </form>
+                
+            </div>
+            
+            <!-- <p class="alert alert-light border mt-4 mb-4 rounded">Login Here</p> -->
+            <!-- <p class="alert alert-light border mt-4 mb-4 rounded">Signup Here</p> -->
+            
+            
+        </div>
+        <div class="box-element {{ request.user.is_authenticated|yesno:'shipping,hidden' }}" id="form-wrapper">
+
+            <form action="{% url 'checkout' %}" method="POST">
+                {% csrf_token %}
+
+                <div id="shipping-info">
+                    <p><b>Shipping Information:</b></p>
+                    <hr>
+                    {% for field in form %}
+                    <div class="form-field">
+                        {{ field.label_tag  }}
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="box-element">
+            <h3>Order Summary</h3>
+            <hr>
+            <div class="cart-row">
+                <div style="flex:2"></div>
+                <div style="flex:2"><strong>Product</strong></div>
+                <div style="flex:1"><strong>Price</strong></div>
+                <div style="flex:1" class="text-right"><strong>Amount</strong></div>
+            </div>
+            {% for product in products %}
+            <div class="cart-row">
+                <div style="flex:2"><img class="row-image" src="{{ product.imageURL }}"></div>
+                <div style="flex:2">
+                    <p>{{ product.name }}</p>
+                </div>
+                {{ product|cart_quantity:request.session.cart }} x
+                <div style="flex:1">
+                    <p>{{ product.price|floatformat:2 }}</p>
+                </div>
+                <div style="flex:1" class="text-right">
+                    <p>{{product|price_total:request.session.cart|floatformat:2}}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- <h5>Items:{{ products|total_qty:request.session.cart }}</h5> -->
+            <h5 class="text-right">Total: {{ products|total_cart_price:request.session.cart|floatformat:2 }}</h5>
+        </div>
+        <hr>
+        <div class="box-element">
+            Free Shipping<br>
+            Pay On Delivery
+        </div>
+        <hr>
+        <div class="box-element">
+            <input id="form-button" class="btn btn-success btn-block {{ request.user.is_authenticated|yesno:',disabled' }}" type="submit" value="Place Order">
+        </div>
+    </div>
+    </form>
+</div>
+
+{% endblock content %}
+{% block javascript %}
+
+<script>
+    var loginForm = document.getElementById('login-form');
+    var signupForm = document.getElementById('signup-form');
+    var indicator = document.getElementById('indicator');
+
+    
+    function login(){
+        signupForm.style.transform = "translateX(0px)";
+        loginForm.style.transform = "translateX(0px)";
+        indicator.style.transform = "translateX(-120px)";
+        // $('#login-form').css("width","300px");
+        $('.form-container').css("height","");
+        
+    }
+    function signup(){
+        signupForm.style.transform = "translateX(300px)";
+        loginForm.style.transform = "translateX(300px)";
+        indicator.style.transform = "translateX(0px)";
+        // $('.form-container').css("height","540px");
+        // console.log(document.getElementsByClassName('form-container'));
+    }
+
+    
+
+
+    
+</script>
+{% endblock javascript %}
